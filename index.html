@@ -2,9 +2,8 @@
 <html>
 <body>
   <script>
-    function redirectDecodedUrl() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const encodedUrl = urlParams.get('a');
+    function redirectDecodedHashUrl() {
+      const encodedUrl = window.location.hash.substring(1);
 
       if (encodedUrl) {
         try {
@@ -15,7 +14,7 @@
         }
       }
     }
-    redirectDecodedUrl();
+    redirectDecodedHashUrl();
   </script>
 </body>
 </html>
