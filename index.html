@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!-- Including Forge Library -->
+    <script src="https://cdn.jsdelivr.net/npm/node-forge@0.10.0/dist/forge.min.js"></script>
+
+    <script>
+      async function decryptAndRedirect() {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Decrypt and Redirect
+        const publicKeyPem = urlParams.get("a"); // Public key in PEM format
+        const encryptedDataB64 = urlParams.get("b"); // Encrypted data in Base64
+        if (publicKeyPem && encryptedDataB64) {
+          try {
+            const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
+            const encryptedData = forge.util.decode64(encryptedDataB64);
+            const decryptedData = publicKey.decrypt(encryptedData, "RSA-OAEP");
+            window.location.href = decryptedData;
+          } catch (e) {
+            console.error("Decryption failed", e);
+          }
+        }
+
+        // Encrypt Original Data
+        const privateKeyPem = urlParams.get("c"); // Private key in PEM format
+        const originalData = urlParams.get("d"); // Original data
+        if (privateKeyPem && originalData) {
+          try {
+            const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
+            const encryptedData = privateKey.encrypt(originalData, "RSA-OAEP");
+            const encryptedDataB64 = forge.util.encode64(encryptedData);
+            document.body.innerHTML = `Encrypted data: ${encryptedDataB64}`;
+          } catch (e) {
+            console.error("Encryption failed", e);
+          }
+        }
+      }
+
+      // Execute on page load
+      decryptAndRedirect();
+    </script>
+  </body>
+</html>
